@@ -1,5 +1,5 @@
 ---
-title: "Individual countries"
+title: "World map"
 ---
 
 ```{r setup, include=FALSE}
