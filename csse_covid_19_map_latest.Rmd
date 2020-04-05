@@ -4,7 +4,7 @@ title: "Individual countries"
 
 ```{r setup, include=FALSE}
 library(tidyverse)
-library(ggrepel)
+library(leaflet)
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
@@ -29,41 +29,42 @@ data_table <- data_table %>% mutate(
 )
 data_table <- data_table %>% mutate(Active = Confirmed - Deaths - Recovered)
 plot_data <- data_table %>%
-  group_by(`Date`, `Country/Region`) %>%
+  subset(Date == max(Date)) %>% 
+  group_by(`Country/Region`) %>%
   summarise(
+    Date = max(Date),
     Confirmed = sum(Confirmed),
     Active = sum(Active),
     Deaths = sum(Deaths),
     Recovered = sum(Recovered),
     Latitude = mean(Lat),
     Longitude = mean(Long)
-  ) %>% 
-  subset(Date == max(Date))
+  )
 ```
 
-## Plot
+## Deaths
 
-```{r}
-plot_data %>% 
-    leaflet() %>%
-    addProviderTiles(providers$Esri.WorldImagery, group = "World Imagery") %>%
-    addProviderTiles(providers$Stamen.TonerLite, group = "Toner Lite") %>%
-    addLayersControl(baseGroups = c("Toner Lite", "World Imagery")) %>%
-    addMarkers(lat = plot_data$Latitude,
-               lng = plot_data$Longitude,
-               label = plot_data$`Country/Region`,
-               clusterOptions = markerClusterOptions(),
-               popup = sprintf(
-                 paste(
-                   "<strong>%s</strong>",
-                   "Confirmed cases: %s",
-                   "Death: %s",
-                   "Recovered: %s",
-                   sep = "</br>"),
-                 format(plot_data$Date, "%a %b %d"),
-                 format(plot_data$Confirmed, big.mark = ","),
-                 format(plot_data$Deaths, big.mark = ","),
-                 format(plot_data$Recovered, big.mark = ","))
-    )
+In this view, the radius of the circle is proportional to the number of deaths at the latest time point.
+
+```{r, fig.width=8, fig.height=5, results='asis', warning=FALSE}
+leaflet(plot_data) %>%
+  addTiles() %>% 
+  addProviderTiles(providers$Esri.WorldImagery, group = "World Imagery") %>%
+  addProviderTiles(providers$Stamen.TonerLite, group = "Toner Lite") %>%
+  addLayersControl(baseGroups = c("Toner Lite", "World Imagery")) %>%
+  addCircles(
+    lng = ~Longitude, lat = ~Latitude, weight = 1,
+    radius = ~log(Deaths + 1) * 5E4,
+    popup = sprintf(
+    paste(
+      "<strong>%s</strong>",
+      "Confirmed cases: %s",
+      "Death: %s",
+      "Recovered: %s",
+      sep = "</br>"),
+    format(plot_data$Date, "%a %b %d"),
+    format(plot_data$Confirmed, big.mark = ","),
+    format(plot_data$Deaths, big.mark = ","),
+    format(plot_data$Recovered, big.mark = ","))
+  )
 ```
-
