@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ```{r, echo=FALSE}
+# Adapted from csse_covid_19_time_series_countries.Rmd (TODO: refactor)
 data_table <- merge(
   csse_confirmed_table %>% rename(Confirmed = "Cases"),
   csse_deaths_table %>% rename(Deaths = "Cases"),
@@ -45,6 +46,7 @@ plot_data <- data_table %>%
 ## Deaths
 
 In this view, the radius of the circle is proportional to the number of deaths at the latest time point.
+Click on the circle to open a popup with the latest statistics.
 
 ```{r, fig.width=8, fig.height=5, results='asis', warning=FALSE}
 leaflet(plot_data) %>%
