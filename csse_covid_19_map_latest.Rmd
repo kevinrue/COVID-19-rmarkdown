@@ -30,16 +30,16 @@ data_table <- data_table %>% mutate(
 )
 data_table <- data_table %>% mutate(Active = Confirmed - Deaths - Recovered)
 plot_data <- data_table %>%
-  subset(Date == max(Date)) %>% 
-  group_by(`Country/Region`) %>%
+  subset(Date == max(Date)) %>%
+  group_by(`Country/Region`) %>% 
   summarise(
     Date = max(Date),
+    Latitude = Lat[Confirmed == max(Confirmed)], # order matters: must happen before 'Confirmed' is summarised
+    Longitude = Long[Confirmed == max(Confirmed)], # order matters: must happen before 'Confirmed' is summarised
     Confirmed = sum(Confirmed),
     Active = sum(Active),
     Deaths = sum(Deaths),
-    Recovered = sum(Recovered),
-    Latitude = mean(Lat),
-    Longitude = mean(Long)
+    Recovered = sum(Recovered)
   )
 ```
 
