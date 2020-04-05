@@ -1,0 +1,69 @@
+---
+title: "Individual countries"
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(ggrepel)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r, child="childs/csse_tables_all.Rmd"}
+```
+
+```{r, echo=FALSE}
+data_table <- merge(
+  csse_confirmed_table %>% rename(Confirmed = "Cases"),
+  csse_deaths_table %>% rename(Deaths = "Cases"),
+  all = TRUE
+) %>% select(-`Province/State`)
+data_table <- merge(
+  data_table,
+  csse_recovered_table %>% rename(Recovered = "Cases"),
+  all = TRUE
+) %>% select(-`Province/State`)
+data_table <- data_table %>% mutate(
+  Confirmed = ifelse(is.na(Confirmed), 0, Confirmed),
+  Deaths = ifelse(is.na(Deaths), 0, Deaths),
+  Recovered = ifelse(is.na(Recovered), 0, Recovered)
+)
+data_table <- data_table %>% mutate(Active = Confirmed - Deaths - Recovered)
+plot_data <- data_table %>%
+  group_by(`Date`, `Country/Region`) %>%
+  summarise(
+    Confirmed = sum(Confirmed),
+    Active = sum(Active),
+    Deaths = sum(Deaths),
+    Recovered = sum(Recovered),
+    Latitude = mean(Lat),
+    Longitude = mean(Long)
+  ) %>% 
+  subset(Date == max(Date))
+```
+
+## Plot
+
+```{r}
+plot_data %>% 
+    leaflet() %>%
+    addProviderTiles(providers$Esri.WorldImagery, group = "World Imagery") %>%
+    addProviderTiles(providers$Stamen.TonerLite, group = "Toner Lite") %>%
+    addLayersControl(baseGroups = c("Toner Lite", "World Imagery")) %>%
+    addMarkers(lat = plot_data$Latitude,
+               lng = plot_data$Longitude,
+               label = plot_data$`Country/Region`,
+               clusterOptions = markerClusterOptions(),
+               popup = sprintf(
+                 paste(
+                   "<strong>%s</strong>",
+                   "Confirmed cases: %s",
+                   "Death: %s",
+                   "Recovered: %s",
+                   sep = "</br>"),
+                 format(plot_data$Date, "%a %b %d"),
+                 format(plot_data$Confirmed, big.mark = ","),
+                 format(plot_data$Deaths, big.mark = ","),
+                 format(plot_data$Recovered, big.mark = ","))
+    )
+```
+
