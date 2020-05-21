@@ -57,6 +57,7 @@ jobs:
         run: |
           local_deps <- remotes::local_package_deps(dependencies = TRUE)
           deps <- remotes::dev_package_deps(dependencies = TRUE)
+          remotes::install_dev(deps)
         shell: Rscript {0}
 
       - name: Session info
