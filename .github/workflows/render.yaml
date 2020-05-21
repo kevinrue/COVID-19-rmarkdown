@@ -31,12 +31,10 @@ jobs:
       - name: Check out repo
         uses: actions/checkout@v2
 
-      - name: Update git submodule COVID-19
-        run: |
-          cd COVID-19
-          git pull
-          git status
-          git log -1
+      - name: Checkout submodules
+        uses: srt32/git-actions@v0.0.3
+        with:
+          args: git submodule update --init --recursive
 
       - name: Set up R
         uses: r-lib/actions/setup-r@master
