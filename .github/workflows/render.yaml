@@ -70,7 +70,7 @@ jobs:
       - name: Install sars2pack
         run: |
           BiocManager::install(c('BiocFileCache'), Ncpu = 2L)
-          remotes::install_github('sars2pack')
+          remotes::install_github('seandavi/sars2pack')
         shell: Rscript {0}
 
       - name: Install dependencies
