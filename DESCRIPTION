@@ -20,7 +20,8 @@ Imports:
     leaflet,
     cowplot,
     ggrepel,
-    DT
+    DT,
+    WDI
 Suggests:
     sessioninfo,
     bookdown
