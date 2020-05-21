@@ -38,7 +38,7 @@ jobs:
 
       - name: Install remotes
         run: |
-          install.packages('remotes)
+          install.packages('remotes')
         shell: Rscript {0}
 
       - name: Query dependencies
