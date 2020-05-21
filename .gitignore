@@ -5,3 +5,4 @@ site-output/
 .Rproj.user/
 *.html
 .Rhistory
+.DS_Store
