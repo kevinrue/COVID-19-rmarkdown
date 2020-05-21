@@ -31,10 +31,11 @@ jobs:
       - name: Check out repo
         uses: actions/checkout@v2
 
-      - name: Inspect git submodule COVID-19
+      - name: Update git submodule COVID-19
         run: |
-          ls
           cd COVID-19
+          git pull
+          git status
           git log -1
 
       - name: Set up R
