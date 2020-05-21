@@ -36,6 +36,9 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
 
+      - name: Set up pandoc
+        uses: r-lib/actions/setup-pandoc@master
+
       - name: Install remotes
         run: |
           install.packages('remotes')
@@ -66,7 +69,7 @@ jobs:
           sessioninfo::session_info(pkgs, include_base = TRUE)
         shell: Rscript {0}
 
-      - name: Render site (git)
+      - name: Render site
         run: |
           rmarkdown::render_site(encoding = 'UTF-8')
         shell: Rscript {0}
