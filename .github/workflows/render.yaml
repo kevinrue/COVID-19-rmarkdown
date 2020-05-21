@@ -21,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { os: macOS-latest, r: 'release', bioc: 'devel'}
+          - { os: macOS-latest, r: 'release', bioc: '3.11'}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
