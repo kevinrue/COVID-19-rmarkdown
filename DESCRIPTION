@@ -23,7 +23,6 @@ Imports:
     DT
 Suggests:
     sessioninfo,
-    bookdown,
-    BiocFileCache
+    bookdown
 Remotes:  
     seandavi/sars2pack

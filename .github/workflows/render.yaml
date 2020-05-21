@@ -67,6 +67,11 @@ jobs:
           key: ${{ runner.os }}-r-${{ matrix.config.r }}-bioc-${{ matrix.config.bioc }}-${{ hashFiles('depends.Rds') }}
           restore-keys: ${{ runner.os }}-r-${{ matrix.config.r }}-bioc-${{ matrix.config.bioc }}-
 
+      - name: Install sars2pack
+        run: |
+          BiocManager::install(c('BiocFileCache'), Ncpu = 2L)
+          remotes::install_github('sars2pack')
+
       - name: Install dependencies
         run: |
           local_deps <- remotes::local_package_deps(dependencies = TRUE)
