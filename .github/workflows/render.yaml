@@ -38,7 +38,7 @@ jobs:
 
       - name: Install remotes
         run: |
-          install.packages('remotes', 'sessioninfo', 'bookdown')
+          install.packages('remotes)
         shell: Rscript {0}
 
       - name: Query dependencies
@@ -81,4 +81,4 @@ jobs:
         with:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           BRANCH: gh-pages
-          FOLDER: _bsite
+          FOLDER: _bite
