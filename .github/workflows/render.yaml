@@ -48,9 +48,16 @@ jobs:
           install.packages('remotes')
         shell: Rscript {0}
 
+      - name: Set BiocManager version
+        if: matrix.config.image == null
+        run: |
+          install.packages('BiocManager')
+          BiocManager::install(version = "${{ matrix.config.bioc }}", ask = FALSE)
+        shell: Rscript {0}
+
       - name: Query dependencies
         run: |
-          saveRDS(remotes::dev_package_deps(dependencies = TRUE, repos = c(getOption('repos'))), 'depends.Rds', version = 2)
+          saveRDS(remotes::dev_package_deps(dependencies = TRUE, repos = c(getOption('repos'), BiocManager::repositories())), 'depends.Rds', version = 2)
         shell: Rscript {0}
 
       - name: Cache R packages
@@ -62,8 +69,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          remotes::install_deps(dependencies = TRUE)
-          remotes::install_cran("rcmdcheck")
+          local_deps <- remotes::local_package_deps(dependencies = TRUE)
+          deps <- remotes::dev_package_deps(dependencies = TRUE, repos = BiocManager::repositories())
+          BiocManager::install(local_deps[local_deps %in% deps$package[deps$diff != 0]], Ncpu = 2L)
         shell: Rscript {0}
 
       - name: Session info
